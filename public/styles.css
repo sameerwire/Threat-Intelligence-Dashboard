@@ -1,0 +1,215 @@
+/* General reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Body styling */
+body {
+    background-color: #000;  /* Black background */
+    color: #00FF00;  /* Green text */
+    font-family: 'Courier New', Courier, monospace;  /* Monospace font */
+    font-size: 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    min-height: 100vh;
+    padding: 20px;
+    position: relative; /* Ensure child elements can be positioned relative to body */
+    z-index: 1; /* Ensure content is above the video */
+}
+
+/* Background video styling */
+#background-video {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: -1; /* Ensure the video is behind all content */
+    opacity: 0.5; /* Optional: Adjust opacity for better readability */
+}
+
+/* Heading styling */
+h1 {
+    margin-bottom: 20px;
+    text-shadow: 0 0 10px #00FF00;
+	font-size: 60px;
+}
+
+/* Container for sections */
+.container {
+    display: flex;
+    flex-direction: column; /* Ensure sections stack vertically */
+    width: 100%;
+    max-width: 1200px;
+}
+
+/* Individual section styling */
+.section {
+    width: 100%; /* Full width by default */
+    margin-bottom: 20px; /* Space between sections */
+}
+
+/* Styling for Radware Threat Map */
+.radware-section {
+    width: 100%; /* Full width */
+	overflow-y: none;
+}
+
+#radware-threat-map {
+    width: 100%; /* Full width */
+    height: 600px; /* Adjust height as needed */
+    border: none; /* Remove border */
+    overflow-y: none; /* Hide any overflow */
+}
+
+#radware-threat-map iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+	overflow-y: none; /* Ensure no scrollbar */
+}
+
+
+
+
+/* Content section to hold threats-chart and form-results sections side by side */
+.content-section {
+    display: flex;
+    flex-direction: row; /* Side by side layout */
+    width: 100%;
+    max-width: 1200px;
+}
+
+/* Styling for Threats and Chart section */
+.threats-chart-section {
+    width: 80%; /* Full width */
+}
+
+.threats-chart-container {
+    display: flex;
+    flex-direction: row; /* Side by side layout */
+    justify-content: space-between; /* Space items evenly */
+    
+    border-radius: 5px;
+    padding: 20px;
+    background-color: rgba(54, 162, 235, 0.2); /* Background color with transparency */
+    backdrop-filter: blur(10px); /* Apply blur effect */
+    height: 60vh; /* Adjust height as needed */
+	margin-right: 20px;
+}
+
+/* Subdividing the threats-chart-container */
+.threats-container {
+    width: 49%; /* Ensure half width */
+    height: 100%; /* Match the height of the container */
+    overflow-y: auto; /* Enable vertical scroll if needed */
+}
+
+.chart-container {
+    width: 49%; /* Ensure half width */
+    display: flex; /* Use flexbox */
+    justify-content: center; /* Center horizontally */
+    align-items: center; /* Center vertically */
+    height: 100%; /* Match the height of the container */
+}
+
+#threatChart {
+    width: 100% !important; /* Full width within its container */
+    height: 100% !important; /* Full height within its container */
+}
+
+/* Styling for Form and Results */
+.form-results-section {
+    width: 30%; /* Full width */
+}
+
+.form-results-container {
+    padding: 20px;
+    
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    background-color: rgba(54, 162, 235, 0.2); /* Background color with transparency */
+    backdrop-filter: blur(10px); /* Apply blur effect */
+}
+
+/* Style form elements */
+#submitForm {
+    display: flex;
+    flex-direction: column;
+}
+
+#submitForm label {
+    margin-bottom: 5px;
+    color: #fff; /* White label text */
+}
+
+#submitForm input[type="text"],
+#submitForm input[type="file"],
+#submitForm button {
+    margin-bottom: 10px;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    background-color: rgba(54, 162, 235, 0.2); /* Black input background */
+    color: #fff; /* White input text */
+}
+
+#submitForm button {
+    background-color: #00FF00; /* Green button background */
+    color: #fff;
+    border: none;
+    cursor: pointer;
+}
+
+#submitForm button:hover {
+    background-color: #218838; /* Darker green on hover */
+}
+
+/* Submission results section */
+.submission-results-section {
+    margin-top: 10px; /* Space between form and submission results */
+}
+
+/* Add blinking text animation */
+@keyframes blink {
+    0% { opacity: 1; }
+    50% { opacity: 0; }
+    100% { opacity: 1; }
+}
+
+.blink {
+    animation: blink 1s infinite;
+}
+
+/* Add terminal cursor effect */
+.cursor {
+    display: inline-block;
+    background-color: #00FF00;
+    width: 10px;
+    height: 20px;
+    vertical-align: bottom;
+}
+
+.blink-cursor {
+    animation: blink 1s step-start infinite;
+}
+
+/* Example CSS to change scrollbar color */
+::-webkit-scrollbar {
+    width: 10px; /* Width of the scrollbar */
+}
+
+::-webkit-scrollbar-track {
+    background: rgba(54, 162, 235, 0.2); /* Track color */
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: #00FF00; /* Thumb color (bright green) */
+    border-radius: 10px; /* Rounded corners */
+    border: 2px solid rgba(54, 162, 235, 0.2); /* Track border color */
+}

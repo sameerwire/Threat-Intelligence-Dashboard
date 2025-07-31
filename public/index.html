@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Threat Intelligence Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+	
+	<video autoplay muted loop id="background-video">
+        <source src="Bg(1).mp4" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
+	
+    <h1>Threat Intelligence Dashboard</h1>
+	
+    <div class="container">
+	
+		<!-- Section for Threats Data and Chart -->
+		<div class="content-section">
+			<div class="section threats-chart-section">
+				<h2>Threats</h2>
+				<div class="threats-chart-container">
+					<div class="threats-container">
+						<div id="threats"></div>
+					</div>
+					<div class="chart-container">
+						<canvas id="threatChart"></canvas>
+					</div>
+				</div>
+			</div>
+		
+		 <!-- Section for Form and Results -->
+			<div class="section form-results-section">
+				<h2>Malware Detection Form</h2>
+				<div class="form-results-container">
+					
+					<form id="submitForm">
+						<label for="urlInput">URL:</label>
+						<input type="text" id="urlInput" name="urlInput">
+						<label for="fileInput">File:</label>
+						<input type="file" id="fileInput" name="fileInput">
+						<button type="submit">Submit</button>
+					</form>
+					<div class="submission-results-section">
+						<h2 id="submissionResultsHeading" style="opacity: 0;">Submission Results</h2>
+						<div id="submission-results" style="opacity: 0;"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+        <!-- Section for Radware Threat Map Widget -->
+        <div class="section radware-section">
+            <div id="radware-threat-map">
+                <iframe src="https://livethreatmap.radware.com/" width="720" height="720" frameborder="0" scrolling="no" ></iframe>
+            </div>
+        </div>
+    </div>
+
+    <!-- Include Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Include your script.js -->
+    <script src="script.js"></script>
+</body>
+</html>
