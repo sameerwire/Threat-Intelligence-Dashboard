@@ -1,3 +1,5 @@
+require('dotenv').config(); // Load environment variables
+
 const express = require('express');
 const axios = require('axios');
 const cors = require('cors');
@@ -8,66 +10,63 @@ const FormData = require('form-data');
 
 const app = express();
 const port = process.env.PORT || 3000;
+const apiKey = process.env.OTX_API_KEY; // Load from .env file
 
 // Middleware
 app.use(cors());
-app.use(express.json()); // for parsing application/json
-app.use(express.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
-// Serve static files from the 'public' directory
+// Serve static files from 'public'
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Multer setup for file uploads
 const upload = multer({ dest: 'uploads/' });
 
-const apiKey = '59dd2a27aa90649e71afb81bff16b4a659a36b1fc33268c08f89747f545e962b'; 
-
 // Start the server
 app.listen(port, () => {
-    console.log(`Server running on http://localhost:${port}`);
+    console.log(`🚀 Server running at http://localhost:${port}`);
 });
 
-// Define API route to fetch threat intelligence data
+// ===== ROUTES =====
+
+// Fetch threat intelligence data
 app.get('/api/threats', async (req, res) => {
     const apiUrl = 'https://otx.alienvault.com/api/v1/pulses/subscribed';
 
     try {
         const response = await axios.get(apiUrl, {
-            headers: {
-                'X-OTX-API-KEY': apiKey
-            }
+            headers: { 'X-OTX-API-KEY': apiKey }
         });
 
-        if (response.data && response.data.results) {
+        if (response.data?.results) {
             const threats = response.data.results.map(pulse => ({
                 indicator: pulse.name,
-                type: pulse.pulse_info ? pulse.pulse_info.indicator_type : 'Unknown',
+                type: pulse.pulse_info?.indicator_type || 'Unknown',
                 description: pulse.description,
                 created: pulse.created
             }));
             res.json(threats);
         } else {
-            res.status(500).json({ error: 'Invalid response from API' });
+            res.status(500).json({ error: 'Invalid response from OTX API' });
         }
     } catch (error) {
-        res.status(500).json({ error: 'Error fetching data from API' });
+        console.error('Threat fetch error:', error.message);
+        res.status(500).json({ error: 'Error fetching data from OTX' });
     }
 });
 
-// Define API route to submit a file and fetch its result
+// Submit file and get threat result
 app.post('/api/submit-file', upload.single('file'), async (req, res) => {
     const file = req.file;
-
-    if (!file) {
-        return res.status(400).json({ error: 'No file uploaded' });
-    }
+    if (!file) return res.status(400).json({ error: 'No file uploaded' });
 
     try {
         const formData = new FormData();
         formData.append('file', fs.createReadStream(file.path));
 
-        const apiUrl = 'https://otx.alienvault.com/api/v1/indicators/submit_file';
-        const response = await axios.post(apiUrl, formData, {
+        const submitUrl = 'https://otx.alienvault.com/api/v1/indicators/submit_file';
+        const response = await axios.post(submitUrl, formData, {
             headers: {
                 'X-OTX-API-KEY': apiKey,
                 ...formData.getHeaders()
@@ -76,12 +75,10 @@ app.post('/api/submit-file', upload.single('file'), async (req, res) => {
 
         const resultData = response.data;
 
-        // Fetch details of the submitted file
+        // Get more details about the file
         const detailUrl = `https://otx.alienvault.com/api/v1/indicators/file/${file.filename}/general`;
         const detailResponse = await axios.get(detailUrl, {
-            headers: {
-                'X-OTX-API-KEY': apiKey
-            }
+            headers: { 'X-OTX-API-KEY': apiKey }
         });
 
         res.json({
@@ -90,21 +87,19 @@ app.post('/api/submit-file', upload.single('file'), async (req, res) => {
             detailResult: detailResponse.data
         });
     } catch (error) {
+        console.error('File submission error:', error.message);
         res.status(500).json({ error: 'Error submitting file or fetching details' });
     }
 });
 
-// Define API route to submit a URL and fetch its result
+// Submit URL and get threat result
 app.post('/api/submit-url', async (req, res) => {
     const { url } = req.body;
-
-    if (!url) {
-        return res.status(400).json({ error: 'No URL provided' });
-    }
+    if (!url) return res.status(400).json({ error: 'No URL provided' });
 
     try {
-        const apiUrl = 'https://otx.alienvault.com/api/v1/indicators/submit_url';
-        const response = await axios.post(apiUrl, { url }, {
+        const submitUrl = 'https://otx.alienvault.com/api/v1/indicators/submit_url';
+        const response = await axios.post(submitUrl, { url }, {
             headers: {
                 'X-OTX-API-KEY': apiKey,
                 'Content-Type': 'application/json'
@@ -113,13 +108,11 @@ app.post('/api/submit-url', async (req, res) => {
 
         const resultData = response.data;
 
-        // Fetch details of the submitted URL
+        // Get more details about the URL
         const encodedUrl = encodeURIComponent(url);
         const detailUrl = `https://otx.alienvault.com/api/v1/indicators/url/${encodedUrl}/general`;
         const detailResponse = await axios.get(detailUrl, {
-            headers: {
-                'X-OTX-API-KEY': apiKey
-            }
+            headers: { 'X-OTX-API-KEY': apiKey }
         });
 
         res.json({
@@ -128,6 +121,7 @@ app.post('/api/submit-url', async (req, res) => {
             detailResult: detailResponse.data
         });
     } catch (error) {
+        console.error('URL submission error:', error.message);
         res.status(500).json({ error: 'Error submitting URL or fetching details' });
     }
 });
